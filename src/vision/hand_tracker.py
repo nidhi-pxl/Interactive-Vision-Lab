@@ -132,37 +132,47 @@ class HandTracker:
                 )
         return img
 
-    def fingers_up(self, hand_info: dict) -> list[int]:
+    def get_finger_states(self, hand_info: dict) -> list[int]:
         """
-        Determines which fingers are open/up.
+        Determines the open/closed state of each of the 5 fingers.
+        Uses a rotation-invariant geometric approach.
 
         Args:
-            hand_info: The dict returned by get_hands_info for a single hand.
+            hand_info: The dictionary returned by get_hands_info for a single hand.
 
         Returns:
-            List of 5 integers (0 for down, 1 for up) matching:
+            List of 5 integers (0 for closed, 1 for open) matching:
             [Thumb, Index, Middle, Ring, Pinky]
         """
         lm_list = hand_info["lm_list"]
-        hand_type = hand_info["type"]
         fingers = []
 
-        # Landmark tip and pip (proximal interphalangeal) joint IDs
+        # Helper function to compute Euclidean distance
+        def get_dist(p1, p2):
+            return math.hypot(lm_list[p2][0] - lm_list[p1][0], lm_list[p2][1] - lm_list[p1][1])
+
+        # Hand scale represented by the distance from wrist (0) to middle MCP joint (9)
+        hand_scale = get_dist(0, 9)
+        if hand_scale == 0:
+            hand_scale = 1.0  # Prevent division by zero
+
+        # 1. Thumb State:
+        # Distance from thumb tip (4) to index finger MCP (5), normalized by hand scale.
+        # If the thumb is extended, this distance is large.
+        thumb_dist = get_dist(4, 5) / hand_scale
+        # Typically, thumb_dist > 0.45 means the thumb is open
+        fingers.append(1 if thumb_dist > 0.45 else 0)
+
+        # 2. Other 4 fingers:
+        # Compare distance from tip to wrist (0) vs. PIP joint to wrist.
+        # Index (8 vs 6), Middle (12 vs 10), Ring (16 vs 14), Pinky (20 vs 18)
         tip_ids = [8, 12, 16, 20]
         pip_ids = [6, 10, 14, 18]
 
-        # Thumb logic (horizontal extension check)
-        # For a mirrored (Right) hand, the thumb tip is to the right of the IP joint when open.
-        # For a mirrored (Left) hand, the thumb tip is to the left of the IP joint when open.
-        if hand_type == "Right":
-            fingers.append(1 if lm_list[4][0] > lm_list[3][0] else 0)
-        else:
-            fingers.append(1 if lm_list[4][0] < lm_list[3][0] else 0)
-
-        # Other 4 fingers logic (vertical elevation check)
         for tip, pip in zip(tip_ids, pip_ids):
-            # In image space, lower y-coordinate means higher up on screen
-            fingers.append(1 if lm_list[tip][1] < lm_list[pip][1] else 0)
+            tip_dist = get_dist(tip, 0)
+            pip_dist = get_dist(pip, 0)
+            fingers.append(1 if tip_dist > pip_dist else 0)
 
         return fingers
 

@@ -11,7 +11,7 @@ Each demo builds upon previous components while keeping the architecture modular
 ## Demos
 
 1. Hand Tracking
-2. Finger Counter
+2. Gesture Recognition (old: Finger Counter)
 3. Pinch Detection
 4. Hand Painter
 5. Particle Trails

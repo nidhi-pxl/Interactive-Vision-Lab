@@ -40,3 +40,24 @@ MediaPipe (mp)
 
 math
 → Built-in mathematics functions such as distance calculations.
+
+# Demo 2 — Gesture Engine- Pipeline progress
+Camera Frame
+      │
+      ▼
+HandTracker.process_frame()
+      │
+      ▼
+MediaPipe Results
+      │
+      ▼
+Landmark Extraction
+      │
+      ▼
+Finger State Detection
+      │
+      ▼
+Gesture Recognition
+      │
+      ▼
+Application Logic
