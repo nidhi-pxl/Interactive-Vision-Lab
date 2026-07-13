@@ -21,6 +21,7 @@ class Particle:
         lifetime: float,
         gravity: tuple[float, float] = (0.0, 0.0),
         drag: float = 1.0,
+        color_mode: str = "normal",
     ):
         """
         Initializes the state of a single particle.
@@ -35,6 +36,7 @@ class Particle:
             lifetime: Duration in seconds the particle should exist.
             gravity: Acceleration vector (gx, gy) in pixels/sec^2.
             drag: Drag factor representing fraction of velocity retained per second.
+            color_mode: Dynamic color behavior name ('normal', 'fire', 'magic').
         """
         self.x = x
         self.y = y
@@ -46,3 +48,4 @@ class Particle:
         self.age = 0.0
         self.gravity = gravity
         self.drag = drag
+        self.color_mode = color_mode

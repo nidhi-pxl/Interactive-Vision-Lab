@@ -25,6 +25,7 @@ class ParticleEmitter:
         lifetime: float = 1.2,
         gravity: tuple[float, float] = (0.0, 0.0),
         drag: float = 1.0,
+        color_mode: str = "normal",
     ):
         """
         Initializes the ParticleEmitter configurations.
@@ -39,6 +40,7 @@ class ParticleEmitter:
             lifetime: Base particle lifetime in seconds.
             gravity: Acceleration vector (gx, gy) in pixels/sec^2.
             drag: Drag damping coefficient (fraction of velocity retained per second).
+            color_mode: Dynamic color behavior name ('normal', 'fire', 'magic').
         """
         self.emission_rate = emission_rate
         self.speed = speed
@@ -48,9 +50,44 @@ class ParticleEmitter:
         self.lifetime = lifetime
         self.gravity = gravity
         self.drag = drag
+        self.color_mode = color_mode
 
         # Frame-rate independent accumulator
         self._accumulator = 0.0
+
+    def configure(
+        self,
+        emission_rate: float = None,
+        speed: float = None,
+        spread: float = None,
+        color: tuple[int, int, int] = None,
+        radius: float = None,
+        lifetime: float = None,
+        gravity: tuple[float, float] = None,
+        drag: float = None,
+        color_mode: str = None,
+    ) -> None:
+        """
+        Dynamically configures particle emitter properties at runtime.
+        """
+        if emission_rate is not None:
+            self.emission_rate = emission_rate
+        if speed is not None:
+            self.speed = speed
+        if spread is not None:
+            self.spread = spread
+        if color is not None:
+            self.color = color
+        if radius is not None:
+            self.radius = max(1.0, radius)
+        if lifetime is not None:
+            self.lifetime = lifetime
+        if gravity is not None:
+            self.gravity = gravity
+        if drag is not None:
+            self.drag = drag
+        if color_mode is not None:
+            self.color_mode = color_mode
 
     def set_color(self, color: tuple[int, int, int]) -> None:
         """Dynamically updates the particle emission color."""
@@ -112,5 +149,6 @@ class ParticleEmitter:
                 lifetime=p_lifetime,
                 gravity=self.gravity,
                 drag=self.drag,
+                color_mode=self.color_mode,
             )
             system.add_particle(p)

@@ -130,8 +130,45 @@ def test_emitter_accumulation():
     print("Emitter accumulation verification: PASSED")
 
 
+def test_emitter_reconfiguration():
+    print("\nTesting Particle Emitter configuration updates...")
+    emitter = ParticleEmitter(
+        emission_rate=50.0,
+        speed=100.0,
+        spread=360.0,
+        color=(0, 255, 0),
+        radius=5.0,
+        lifetime=1.0,
+        gravity=(0.0, 0.0),
+        drag=1.0,
+        color_mode="normal",
+    )
+
+    # Reconfigure properties
+    emitter.configure(
+        emission_rate=120.0,
+        gravity=(0.0, -100.0),
+        drag=0.98,
+        color_mode="fire",
+    )
+
+    assert emitter.emission_rate == 120.0
+    assert emitter.gravity == (0.0, -100.0)
+    assert emitter.drag == 0.98
+    assert emitter.color_mode == "fire"
+
+    # Ensure other properties remain untouched
+    assert emitter.speed == 100.0
+    assert emitter.spread == 360.0
+    assert emitter.radius == 5.0
+    assert emitter.lifetime == 1.0
+
+    print("Emitter reconfiguration verification: PASSED")
+
+
 if __name__ == "__main__":
     test_particle_physics_updates()
     test_particle_expiration()
     test_emitter_accumulation()
+    test_emitter_reconfiguration()
     print("\nAll Particle Engine unit tests passed successfully!")
