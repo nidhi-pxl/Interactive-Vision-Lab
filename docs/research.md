@@ -61,3 +61,26 @@ Gesture Recognition
       │
       ▼
 Application Logic
+
+# Demo 3 – Pinch Detection
+
+## Goal
+
+Create a reusable PinchDetector that measures the distance between the thumb tip and index fingertip to determine whether a pinch gesture is occurring.
+
+## Concepts
+
+- Euclidean distance
+- Threshold-based classification
+- Landmark geometry
+- Interaction state
+- Reusable interaction modules
+
+## Future Uses
+
+- Hand Painter
+- Particle Trails
+- Blooming Flowers
+- Fruit Ninja
+- AR object manipulation
+- UI selection
